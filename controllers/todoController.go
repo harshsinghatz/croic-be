@@ -102,14 +102,34 @@ func UpdateTodoById(c *gin.Context) {
 
 	var todoId = c.Param("id")
 
+	var body struct {
+		Title       string
+		Description string
+		DueDate     string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Something went wrong",
+		})
+
+		return
+	}
+
 	var todo models.Todo
 
-	initializers.DB.Where("id = ?", todoId).Find(&todo)
+	var res = initializers.DB.Where("id = ?", todoId).Find(&todo)
 
+	if res.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Todo doesn't exists",
+		})
+		return;
+	}
+
+	tod		
+		
 	c.JSON(http.StatusBadRequest, gin.H{
 		"message": "Something went wrong",
 	})
-
-	return
-
 }
